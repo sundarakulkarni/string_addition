@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator</title>
+    <script>
+      function onInputChange(event) {
+        const stringToBeAdded = event.target.value;
+        let sum = 0;
+        if (stringToBeAdded) {
+          stringToBeAdded.split(",").forEach((item) => {
+            if (!isNaN(item)) sum += Number(item);
+          });
+        } else {
+          sum = 0;
+        }
+        document.getElementById("result").innerText = sum;
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root">
+      <label for="string_input">Enter string here</label>
+      <textarea id="string_input" oninput="onInputChange(event)"></textarea>
+      <div id="result"></div>
+    </div>
+  </body>
+</html>
