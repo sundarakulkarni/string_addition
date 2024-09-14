@@ -9,7 +9,7 @@
         const stringToBeAdded = event.target.value;
         let sum = 0;
         if (stringToBeAdded) {
-          stringToBeAdded.split(",").forEach((item) => {
+          stringToBeAdded.split(/[,|\n]/).forEach((item) => {
             if (!isNaN(item)) sum += Number(item);
           });
         } else {
