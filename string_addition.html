@@ -17,19 +17,22 @@
         if (regex.test(value)) addNumbers(value, regexForSplit);
         else
           document.getElementById("result").innerText =
-            "Error : Enter valid input"; //Display error if the string is invalid
+            "Error :- Enter valid input"; //Display error if the string is invalid
       }
 
       //Adds the numbers
       function addNumbers(stringToBeAdded, regex) {
         let sum = 0;
+        let negativeNumbers = "";
 
         stringToBeAdded.split(regex).forEach((item) => {
           //splits the string based on the provided regex and adds each number
-          sum += Number(item);
+          Number(item) < 0 ? (negativeNumbers += item) : (sum += Number(item));
         });
 
-        document.getElementById("result").innerText = "Result : " + sum; //Display the sum
+        document.getElementById("result").innerText = negativeNumbers
+          ? "Error :- Following negative numbers found : " + negativeNumbers
+          : "Result :- " + sum; //Display the sum
       }
 
       function onInputChange(event) {
@@ -39,7 +42,7 @@
 
         if (delimiter) {
           const regexForValidString = new RegExp(
-            `^(\\d+([${delimiter}\n]\\d+)*)$`
+            `^(-?\\d+([${delimiter}\n]-?\\d+)*)$`
           ); //creates regex to check if the string is a custom delimiter or new line seperated number, does not accept negative number
           calcResult(
             stringToBeAdded.slice(4),
@@ -47,7 +50,7 @@
             new RegExp(`[${delimiter}|\n]`) //regex to split the string with the custom delimiter or newline
           );
         } else {
-          const regexForValidString = /^(\d+([,\n]\d+)*)$/; //regex to check if the string is a comma or new line seperated number, does not accept negative numbers
+          const regexForValidString = /^(-?\d+([,\n]-?\d+)*)$/; //regex to check if the string is a comma or new line seperated number, does not accept negative numbers
           calcResult(stringToBeAdded, regexForValidString, /[,|\n]/);
         }
       }
