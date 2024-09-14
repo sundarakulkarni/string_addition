@@ -5,17 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calculator</title>
     <script>
+      const regexForDelimiterAtStart = /^\/\/.\n/; //regex to check if a start of the string contains custom delimiter
+
+      //The function returns false id there is no custom delimiter and returns the custom delimiter if exists
+      function getCustomDelimiterIfPresent(value) {
+        return regexForDelimiterAtStart.test(value) ? value[2] : false;
+      }
+
+      //Checks if the string is valid, accept three parameters 1) the string to be added, 2) a regex to test the string, 3) the regex used to split the string
+      function calcResult(value, regex, regexForSplit) {
+        if (regex.test(value)) addNumbers(value, regexForSplit);
+        else
+          document.getElementById("result").innerText =
+            "Error : Enter valid input"; //Display error if the string is invalid
+      }
+
+      //Adds the numbers
+      function addNumbers(stringToBeAdded, regex) {
+        let sum = 0;
+
+        stringToBeAdded.split(regex).forEach((item) => {
+          //splits the string based on the provided regex and adds each number
+          sum += Number(item);
+        });
+
+        document.getElementById("result").innerText = "Result : " + sum; //Display the sum
+      }
+
       function onInputChange(event) {
         const stringToBeAdded = event.target.value;
-        let sum = 0;
-        if (stringToBeAdded) {
-          stringToBeAdded.split(/[,|\n]/).forEach((item) => {
-            if (!isNaN(item)) sum += Number(item);
-          });
+
+        const delimiter = getCustomDelimiterIfPresent(stringToBeAdded); //gets custom delimiter if present in string
+
+        if (delimiter) {
+          const regexForValidString = new RegExp(
+            `^(\\d+([${delimiter}\n]\\d+)*)$`
+          ); //creates regex to check if the string is a custom delimiter or new line seperated number, does not accept negative number
+          calcResult(
+            stringToBeAdded.slice(4),
+            regexForValidString,
+            new RegExp(`[${delimiter}|\n]`) //regex to split the string with the custom delimiter or newline
+          );
         } else {
-          sum = 0;
+          const regexForValidString = /^(\d+([,\n]\d+)*)$/; //regex to check if the string is a comma or new line seperated number, does not accept negative numbers
+          calcResult(stringToBeAdded, regexForValidString, /[,|\n]/);
         }
-        document.getElementById("result").innerText = sum;
       }
     </script>
   </head>
@@ -23,7 +57,7 @@
     <div id="root">
       <label for="string_input">Enter string here</label>
       <textarea id="string_input" oninput="onInputChange(event)"></textarea>
-      <div id="result"></div>
+      <div id="result">Result :</div>
     </div>
   </body>
 </html>
